@@ -2,7 +2,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aarunya</title>
+  <title>Aarunya – Find Schools Near You</title>
+  <link rel="icon" type="image/png" href="logo.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -10,25 +11,38 @@
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
+  <!-- Header -->
   <header class="flex justify-between items-center p-4 bg-blue-700 text-white shadow">
-    <h1 class="text-xl font-bold">Aarunya</h1>
+    <div class="flex items-center gap-2">
+      <img src="logo.png" alt="Aarunya Logo" class="h-10 w-10 rounded-full" />
+      <h1 class="text-xl font-bold">Aarunya</h1>
+    </div>
     <button id="langToggle" class="bg-white text-blue-700 px-3 py-1 rounded shadow">मराठी</button>
-  </header>  <section class="text-center py-10 px-4">
-    <h2 class="text-4xl font-bold mb-4" data-en="Choose Better. Learn Better." data-mr="चांगली निवड करा. चांगले शिका.">Choose Better. Learn Better.</h2>
+  </header>  <!-- Hero Section -->  <section class="text-center py-10 px-4 bg-gradient-to-br from-yellow-100 to-white">
+    <img src="logo.png" alt="Aarunya Logo" class="mx-auto mb-4 h-24 w-24" />
+    <h2 class="text-4xl font-bold mb-2" data-en="Choose Better. Learn Better." data-mr="चांगली निवड करा. चांगले शिका.">Choose Better. Learn Better.</h2>
     <p class="text-lg" data-en="Helping rural parents find the best schools." data-mr="ग्रामीण पालकांना सर्वोत्तम शाळा शोधण्यात मदत करतो.">Helping rural parents find the best schools.</p>
-  </section>  <section class="px-4 py-6">
-    <input type="text" id="searchInput" placeholder="Search schools..." class="w-full p-3 border border-gray-300 rounded-lg shadow-sm mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    <ul id="results" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></ul>
-  </section>  <section class="bg-white p-6 rounded-lg shadow mx-4 mb-6" id="about">
+  </section>  <!-- School Search Section -->  <section class="px-4 py-8">
+    <input type="text" id="searchInput" placeholder="Search by school or location..." class="w-full p-3 border border-gray-300 rounded-lg shadow-sm mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    <ul id="results" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></ul>
+    <p id="noResults" class="text-center text-gray-500 hidden" data-en="No schools found." data-mr="शाळा सापडल्या नाहीत.">No schools found.</p>
+  </section>  <!-- About Section -->  <section class="bg-white p-6 rounded-lg shadow mx-4 mb-6">
     <h3 class="text-2xl font-semibold mb-2" data-en="About Aarunya" data-mr="आरुण्याबद्दल">About Aarunya</h3>
     <p class="text-gray-700" data-en="Aarunya helps rural families find and compare nearby schools based on facilities, fees, and reviews."
        data-mr="आरुण्य ग्रामीण कुटुंबांना सुविधा, फी आणि पुनरावलोकनांच्या आधारे जवळच्या शाळा शोधण्यास आणि तुलना करण्यास मदत करते.">
       Aarunya helps rural families find and compare nearby schools based on facilities, fees, and reviews.
     </p>
-  </section>  <footer class="p-4 bg-blue-700 text-white text-center">
+  </section>  <!-- Contact Us Section -->  <section class="bg-blue-50 p-6 rounded-lg shadow mx-4 mb-10">
+    <h3 class="text-2xl font-semibold mb-2" data-en="Contact Us" data-mr="आमच्याशी संपर्क साधा">Contact Us</h3>
+    <form class="grid gap-4">
+      <input type="text" placeholder="Your Name" class="p-3 border border-gray-300 rounded-lg" required />
+      <input type="email" placeholder="Your Email" class="p-3 border border-gray-300 rounded-lg" required />
+      <textarea rows="4" placeholder="Your Message" class="p-3 border border-gray-300 rounded-lg" required></textarea>
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Send</button>
+    </form>
+  </section>  <!-- Footer -->  <footer class="p-4 bg-blue-700 text-white text-center">
     <p>&copy; 2025 Aarunya</p>
-  </footer>  <script>
-    // Language Toggle
+  </footer>  <!-- Script -->  <script>
     const toggleBtn = document.getElementById('langToggle');
     let currentLang = 'en';
     toggleBtn.addEventListener('click', () => {
@@ -39,15 +53,17 @@
       toggleBtn.textContent = currentLang === 'en' ? 'मराठी' : 'English';
     });
 
-    // Sample school data
     const schools = [
       { name: 'Shivaji Vidyalaya', location: 'Pune' },
       { name: 'Gandhi High School', location: 'Satara' },
-      { name: 'ZP Primary School', location: 'Kolhapur' }
+      { name: 'ZP Primary School', location: 'Kolhapur' },
+      { name: 'Lokmanya School', location: 'Nashik' },
+      { name: 'Kranti Vidya Mandir', location: 'Solapur' }
     ];
 
     const searchInput = document.getElementById('searchInput');
     const results = document.getElementById('results');
+    const noResults = document.getElementById('noResults');
 
     searchInput.addEventListener('input', () => {
       const query = searchInput.value.toLowerCase();
@@ -56,14 +72,20 @@
         s.name.toLowerCase().includes(query) ||
         s.location.toLowerCase().includes(query)
       );
-      filtered.forEach(s => {
-        const li = document.createElement('li');
-        li.innerHTML = `<div class='p-4 border border-gray-200 rounded-lg shadow bg-white'>
-                          <h4 class='text-lg font-semibold'>${s.name}</h4>
-                          <p class='text-sm text-gray-600'>${s.location}</p>
-                        </div>`;
-        results.appendChild(li);
-      });
+
+      if (filtered.length === 0) {
+        noResults.classList.remove('hidden');
+      } else {
+        noResults.classList.add('hidden');
+        filtered.forEach(s => {
+          const li = document.createElement('li');
+          li.innerHTML = `<div class='p-4 border border-gray-200 rounded-lg shadow bg-white'>
+                            <h4 class='text-lg font-semibold'>${s.name}</h4>
+                            <p class='text-sm text-gray-600'>${s.location}</p>
+                          </div>`;
+          results.appendChild(li);
+        });
+      }
     });
   </script></body>
 </html>
