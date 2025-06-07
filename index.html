@@ -22,17 +22,31 @@
     <img src="logo.png" alt="Aarunya Logo" class="mx-auto mb-4 h-24 w-24" />
     <h2 class="text-4xl font-bold mb-2" data-en="Choose Better. Learn Better." data-mr="चांगली निवड करा. चांगले शिका.">Choose Better. Learn Better.</h2>
     <p class="text-lg" data-en="Helping rural parents find the best schools." data-mr="ग्रामीण पालकांना सर्वोत्तम शाळा शोधण्यात मदत करतो.">Helping rural parents find the best schools.</p>
-  </section>  <!-- School Search Section -->  <section class="px-4 py-8">
-    <input type="text" id="searchInput" placeholder="Search by school or location..." class="w-full p-3 border border-gray-300 rounded-lg shadow-sm mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+  </section>  <!-- Filters Section -->  <section class="px-4 py-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <select id="locationFilter" class="p-2 border rounded">
+      <option value="">All Locations</option>
+      <option value="Pune">Pune</option>
+      <option value="Satara">Satara</option>
+      <option value="Kolhapur">Kolhapur</option>
+      <option value="Nashik">Nashik</option>
+      <option value="Solapur">Solapur</option>
+    </select>
+    <select id="typeFilter" class="p-2 border rounded">
+      <option value="">All Types</option>
+      <option value="Private">Private</option>
+      <option value="Government">Government</option>
+    </select>
+    <select id="feesFilter" class="p-2 border rounded">
+      <option value="">All Fees</option>
+      <option value="low">₹0–₹1000</option>
+      <option value="medium">₹1000–₹5000</option>
+      <option value="high">₹5000+</option>
+    </select>
+    <input type="text" id="searchInput" placeholder="Search school name..." class="p-2 border rounded" />
+  </section>  <!-- School Results Section -->  <section class="px-4 py-4">
     <ul id="results" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></ul>
     <p id="noResults" class="text-center text-gray-500 hidden" data-en="No schools found." data-mr="शाळा सापडल्या नाहीत.">No schools found.</p>
-  </section>  <!-- About Section -->  <section class="bg-white p-6 rounded-lg shadow mx-4 mb-6">
-    <h3 class="text-2xl font-semibold mb-2" data-en="About Aarunya" data-mr="आरुण्याबद्दल">About Aarunya</h3>
-    <p class="text-gray-700" data-en="Aarunya helps rural families find and compare nearby schools based on facilities, fees, and reviews."
-       data-mr="आरुण्य ग्रामीण कुटुंबांना सुविधा, फी आणि पुनरावलोकनांच्या आधारे जवळच्या शाळा शोधण्यास आणि तुलना करण्यास मदत करते.">
-      Aarunya helps rural families find and compare nearby schools based on facilities, fees, and reviews.
-    </p>
-  </section>  <!-- Contact Us Section -->  <section class="bg-blue-50 p-6 rounded-lg shadow mx-4 mb-10">
+  </section>  <!-- Contact Section -->  <section class="bg-white p-6 rounded-lg shadow mx-4 mb-6">
     <h3 class="text-2xl font-semibold mb-2" data-en="Contact Us" data-mr="आमच्याशी संपर्क साधा">Contact Us</h3>
     <form class="grid gap-4">
       <input type="text" placeholder="Your Name" class="p-3 border border-gray-300 rounded-lg" required />
@@ -40,9 +54,9 @@
       <textarea rows="4" placeholder="Your Message" class="p-3 border border-gray-300 rounded-lg" required></textarea>
       <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Send</button>
     </form>
-  </section>  <!-- Footer -->  <footer class="p-4 bg-blue-700 text-white text-center">
+  </section>  <footer class="p-4 bg-blue-700 text-white text-center">
     <p>&copy; 2025 Aarunya</p>
-  </footer>  <!-- Script -->  <script>
+  </footer>  <script>
     const toggleBtn = document.getElementById('langToggle');
     let currentLang = 'en';
     toggleBtn.addEventListener('click', () => {
@@ -54,25 +68,38 @@
     });
 
     const schools = [
-      { name: 'Shivaji Vidyalaya', location: 'Pune' },
-      { name: 'Gandhi High School', location: 'Satara' },
-      { name: 'ZP Primary School', location: 'Kolhapur' },
-      { name: 'Lokmanya School', location: 'Nashik' },
-      { name: 'Kranti Vidya Mandir', location: 'Solapur' }
+      { name: 'Shivaji Vidyalaya', location: 'Pune', type: 'Government', fees: 0 },
+      { name: 'Gandhi High School', location: 'Satara', type: 'Private', fees: 3000 },
+      { name: 'ZP Primary School', location: 'Kolhapur', type: 'Government', fees: 0 },
+      { name: 'Lokmanya School', location: 'Nashik', type: 'Private', fees: 4500 },
+      { name: 'Kranti Vidya Mandir', location: 'Solapur', type: 'Government', fees: 500 }
     ];
 
+    const locationFilter = document.getElementById('locationFilter');
+    const typeFilter = document.getElementById('typeFilter');
+    const feesFilter = document.getElementById('feesFilter');
     const searchInput = document.getElementById('searchInput');
     const results = document.getElementById('results');
     const noResults = document.getElementById('noResults');
 
-    searchInput.addEventListener('input', () => {
-      const query = searchInput.value.toLowerCase();
-      results.innerHTML = '';
-      const filtered = schools.filter(s =>
-        s.name.toLowerCase().includes(query) ||
-        s.location.toLowerCase().includes(query)
-      );
+    function filterSchools() {
+      const location = locationFilter.value;
+      const type = typeFilter.value;
+      const fees = feesFilter.value;
+      const keyword = searchInput.value.toLowerCase();
 
+      const filtered = schools.filter(s => {
+        const matchLocation = !location || s.location === location;
+        const matchType = !type || s.type === type;
+        const matchFees = !fees ||
+          (fees === 'low' && s.fees <= 1000) ||
+          (fees === 'medium' && s.fees > 1000 && s.fees <= 5000) ||
+          (fees === 'high' && s.fees > 5000);
+        const matchKeyword = s.name.toLowerCase().includes(keyword);
+        return matchLocation && matchType && matchFees && matchKeyword;
+      });
+
+      results.innerHTML = '';
       if (filtered.length === 0) {
         noResults.classList.remove('hidden');
       } else {
@@ -81,11 +108,18 @@
           const li = document.createElement('li');
           li.innerHTML = `<div class='p-4 border border-gray-200 rounded-lg shadow bg-white'>
                             <h4 class='text-lg font-semibold'>${s.name}</h4>
-                            <p class='text-sm text-gray-600'>${s.location}</p>
+                            <p class='text-sm text-gray-600'>${s.location} • ${s.type} • ₹${s.fees}</p>
                           </div>`;
           results.appendChild(li);
         });
       }
-    });
+    }
+
+    locationFilter.addEventListener('change', filterSchools);
+    typeFilter.addEventListener('change', filterSchools);
+    feesFilter.addEventListener('change', filterSchools);
+    searchInput.addEventListener('input', filterSchools);
+
+    filterSchools();
   </script></body>
-</html>
+  </html>
