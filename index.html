@@ -1,1 +1,69 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aarunya</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <header class="flex justify-between items-center p-4 bg-blue-700 text-white shadow">
+    <h1 class="text-xl font-bold">Aarunya</h1>
+    <button id="langToggle" class="bg-white text-blue-700 px-3 py-1 rounded shadow">मराठी</button>
+  </header>  <section class="text-center py-10 px-4">
+    <h2 class="text-4xl font-bold mb-4" data-en="Choose Better. Learn Better." data-mr="चांगली निवड करा. चांगले शिका.">Choose Better. Learn Better.</h2>
+    <p class="text-lg" data-en="Helping rural parents find the best schools." data-mr="ग्रामीण पालकांना सर्वोत्तम शाळा शोधण्यात मदत करतो.">Helping rural parents find the best schools.</p>
+  </section>  <section class="px-4 py-6">
+    <input type="text" id="searchInput" placeholder="Search schools..." class="w-full p-3 border border-gray-300 rounded-lg shadow-sm mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    <ul id="results" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></ul>
+  </section>  <section class="bg-white p-6 rounded-lg shadow mx-4 mb-6" id="about">
+    <h3 class="text-2xl font-semibold mb-2" data-en="About Aarunya" data-mr="आरुण्याबद्दल">About Aarunya</h3>
+    <p class="text-gray-700" data-en="Aarunya helps rural families find and compare nearby schools based on facilities, fees, and reviews."
+       data-mr="आरुण्य ग्रामीण कुटुंबांना सुविधा, फी आणि पुनरावलोकनांच्या आधारे जवळच्या शाळा शोधण्यास आणि तुलना करण्यास मदत करते.">
+      Aarunya helps rural families find and compare nearby schools based on facilities, fees, and reviews.
+    </p>
+  </section>  <footer class="p-4 bg-blue-700 text-white text-center">
+    <p>&copy; 2025 Aarunya</p>
+  </footer>  <script>
+    // Language Toggle
+    const toggleBtn = document.getElementById('langToggle');
+    let currentLang = 'en';
+    toggleBtn.addEventListener('click', () => {
+      currentLang = currentLang === 'en' ? 'mr' : 'en';
+      document.querySelectorAll('[data-en]').forEach(el => {
+        el.textContent = el.dataset[currentLang];
+      });
+      toggleBtn.textContent = currentLang === 'en' ? 'मराठी' : 'English';
+    });
 
+    // Sample school data
+    const schools = [
+      { name: 'Shivaji Vidyalaya', location: 'Pune' },
+      { name: 'Gandhi High School', location: 'Satara' },
+      { name: 'ZP Primary School', location: 'Kolhapur' }
+    ];
+
+    const searchInput = document.getElementById('searchInput');
+    const results = document.getElementById('results');
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+      results.innerHTML = '';
+      const filtered = schools.filter(s =>
+        s.name.toLowerCase().includes(query) ||
+        s.location.toLowerCase().includes(query)
+      );
+      filtered.forEach(s => {
+        const li = document.createElement('li');
+        li.innerHTML = `<div class='p-4 border border-gray-200 rounded-lg shadow bg-white'>
+                          <h4 class='text-lg font-semibold'>${s.name}</h4>
+                          <p class='text-sm text-gray-600'>${s.location}</p>
+                        </div>`;
+        results.appendChild(li);
+      });
+    });
+  </script></body>
+</html>
